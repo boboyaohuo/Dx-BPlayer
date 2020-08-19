@@ -1,0 +1,42 @@
+{
+  "name": "vue-bplayer",
+  "version": "0.1.0",
+  "description": "This is a simple HTML5 video player based on Vue.",
+  "main": "lib/vue-bplayer.umd.min.js",
+  "private": false,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lib": "vue-cli-service build --target lib --name vue-bplayer --dest lib packages/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/boboyaohuo/Vue-BPlayer.git"
+  },
+  "keywords": [
+    "vue",
+    "vue-BPlayer",
+    "BPlayer",
+    "player",
+    "video",
+    "vue-video"
+  ],
+  "author": "wujianbo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/boboyaohuo/Vue-BPlayer/issues"
+  },
+  "homepage": "https://github.com/boboyaohuo/Vue-BPlayer#readme",
+  "dependencies": {
+    "vue": "^2.6.11"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.9.0",
+    "@vue/cli-plugin-unit-mocha": "^3.9.0",
+    "@vue/cli-service": "^3.9.0",
+    "@vue/eslint-config-standard": "^4.0.0",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.6.10"
+  }
+}

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <section class="main">
-      <TestVideo url="http://vjs.zencdn.net/v/oceans.mp4" />
+      <TestVideo/>
     </section>
   </div>
 </template>
@@ -13,11 +13,15 @@ export default {
   name: 'app',
   components: {
     TestVideo
+  },
+  data() {
+    return {
+    }
   }
 };
 </script>
 
-<style lang="scss">
+<style lang="stylus">
 html,
 body {
   padding: 0;

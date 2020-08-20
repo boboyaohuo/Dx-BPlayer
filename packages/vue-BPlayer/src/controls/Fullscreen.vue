@@ -57,7 +57,6 @@ export default {
       this.$emit('update:isFullscreen', !!fullEle);
     },
     reqFullScreen(element) {
-      return;
       if (element.requestFullscreen) {
         element.requestFullscreen();
       } else if (element.mozRequestFullScreen) {

@@ -58,11 +58,16 @@ export default {
     isPlaying: {
       default: false,
       type: Boolean
+    },
+    isStart: {
+      default: true,
+      type: Boolean
     }
   },
   methods: {
     handleClick() {
       this.$emit('update:isPlaying', !this.isPlaying);
+      this.$emit('update:isStart', false);
     }
   }
 };
@@ -71,6 +76,7 @@ export default {
 <style lang="scss" scoped>
 ._play-btn {
   position: absolute;
+  z-index: 19;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

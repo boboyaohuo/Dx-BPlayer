@@ -1,21 +1,23 @@
 <template>
   <div class="qun-player"
        ref="container"
-       @click="isClearMode=!isClearMode">
+       @click.stop="clearModeTogger">
     <!--模拟poster -->
     <div class="_poster"
          :style="{backgroundImage:`url(${options.cover})`}"
          v-show="!isPlaying&&isStart">
     </div>
-    <template v-show="isPlaying">
+    <template>
       <video class="_video-ref"
              webkit-playsinline
              playsinline
-             x5-video-player-fullscreen
+             x5-video-player-fullscreen="false"
              x-webkit-airplay="allow"
              x5-video-player-type="h5"
+             x5-video-orientation="landscape"
              crossorigin="anonymous"
              ref="video"
+             tabindex="-1"
              :muted="options.muted"
              :loop="options.loop"
              :preload="options.preload"
@@ -27,7 +29,7 @@
         Your browser does not support the video element.
       </video>
       <transition name="fade">
-        <PlayBtn :isPlaying.sync="isPlaying"
+        <PlayBtn :isPlaying.sync="isPlaying" :isStart.sync="isStart"
                  v-show="!isClearMode" />
       </transition>
       <transition name="fade">
@@ -68,7 +70,7 @@ export default {
         cover: '',
         muted: true,
         loop: false,
-        preload: 'metadata',
+        preload: 'auto',
         poster: '',
         volume: 1,
         autoplay: false
@@ -78,14 +80,13 @@ export default {
       clearModeTimer: null,
       isStart: true,
       isPlaying: false,
+      isMove: false,
       isClearMode: false
     };
   },
   watch: {
     isPlaying() {
-      this.isStart = false;
       this.play();
-      // this.setClearModeTimer();
     }
   },
   computed: {
@@ -126,11 +127,19 @@ export default {
         this.$video.muted = false;
       }, 500);
     },
+    clearModeTogger() {
+      if (this.isStart) return;
+      this.isClearMode = !this.isClearMode;
+      if (!this.isClearMode) {
+        this.setClearModeTimer();
+      }
+    },
     setClearModeTimer() {
       if (this.clearModeTimer) {
         clearTimeout(this.clearModeTimer);
       }
       this.clearModeTimer = setTimeout(() => {
+        if (this.isMove) return;
         this.isClearMode = true;
         this.$emit('clearMode');
       }, 3000);
@@ -146,7 +155,9 @@ export default {
     play() {
       if (this.isPlaying) {
         this.pauseAllVideo();
-        this.$video.play();
+        this.$video.play().then(() => {
+          this.clearModeTogger();
+        }).catch((e)=>{});
       } else {
         this.$video.pause();
       }
@@ -186,6 +197,7 @@ export default {
   height: 100%;
   min-height: 10em;
   position: relative;
+  z-index: 19;
   background: #000;
   overflow: hidden;
   &:fullscreen,
@@ -213,6 +225,7 @@ export default {
     background: #000;
     width: 100%;
     height: 100%;
+    z-index: -9;
     /* object-fit: cover; */
     &::-webkit-media-controls,
     &::-webkit-media-controls-enclosure {

@@ -3,7 +3,7 @@
     <span class="_time-current">{{ textCurrentTime }}</span>
     <div class="_slider" ref="_sliderRef" @click.stop="clickSlider">
       <div class="_slider-cur" :style="{ width: offsetLeft }"></div>
-      <i class="_slider-btn" @click.stop :style="{ left: offsetLeft }" ref="_sliderBtnRef"></i>
+      <i class="_slider-btn" :class="sliderInfo.isMove ? 'move' : ''" @click.stop :style="{ left: offsetLeft }" ref="_sliderBtnRef"></i>
     </div>
     <span class="_time-amount">{{ textTotalTime }}</span>
   </div>
@@ -99,6 +99,7 @@ export default {
       this.textTotalTime = this.secondToTime(totalTime);
     },
     handleTimeupdate() {
+      if (this.sliderInfo.isMove) return;
       // 视频播放时间变化执行
       const currentTime = this.$video.currentTime;
       const ratio = (currentTime / this.$video.duration) * 100;
@@ -134,6 +135,7 @@ export default {
       // 滑块拖拽开始
       this.sliderInfo.startX = $event.clientX || $event.changedTouches[0].clientX;
       this.sliderInfo.isMove = true;
+      this.playerRef.isMove = true;
       this.sliderInfo.oldTime = this.$video.currentTime;
       this.sliderInfo.oldOffsetLeft = parseFloat(this.offsetLeft);
     },
@@ -154,9 +156,11 @@ export default {
       if (this.sliderInfo.isMove) {
         const { ratio, second } = this.computeMoveInfo(ClienX);
         this.updateVideoTime(second + this.sliderInfo.oldTime);
-        this.updateTextTime(second + this.sliderInfo.oldTime);
-        this.updateSlider(ratio + parseFloat(this.offsetLeft));
+        // this.updateTextTime(second + this.sliderInfo.oldTime);
+        // this.updateSlider(ratio + parseFloat(this.offsetLeft));
         this.sliderInfo.isMove = false;
+        this.playerRef.isMove = false;
+        this.playerRef.clearModeTogger;
         // this.playerRef.isPlaying = true;
       }
     }
@@ -213,6 +217,17 @@ export default {
       transform: translate(-50%, -50%);
       transition: all 3ms;
       cursor: pointer;
+      &:after{
+        content: '';
+        position: absolute;
+        top: -0.3em;
+        bottom: -0.3em;
+        right: -0.3em;
+        left: -0.3em;
+      }
+    }
+    .move {
+      transform: translate(-50%, -50%) scale(1.5);
     }
   }
 }

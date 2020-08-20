@@ -11,9 +11,10 @@ export default {
       video: {
         url: 'https://api.dogecloud.com/player/get.mp4?vcode=5ac682e6f8231991&userId=17&ext=.mp4',
         loop: true,
-        autoplay: false
-        // cover: 'https://i.loli.net/2019/06/06/5cf8c5d9c57b510947.png'
-      }
+        autoplay: false,
+        cover: 'https://i.loli.net/2019/06/06/5cf8c5d9c57b510947.png'
+      },
+      full: false
     };
   },
   watch: {},
@@ -25,6 +26,7 @@ export default {
   filters: {},
   methods: {
     fullscreen(data) {
+      this.full = data;
       console.log('====================================');
       console.log(data);
       console.log('====================================');

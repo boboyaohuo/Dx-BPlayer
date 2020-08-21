@@ -3,7 +3,13 @@
     <span class="_time-current">{{ textCurrentTime }}</span>
     <div class="_slider" :class="sliderInfo.isMove ? 'move' : ''" ref="_sliderRef" @click.stop="clickSlider">
       <div class="_slider-cur" :style="{ width: offsetLeft }"></div>
-      <i class="_slider-btn" :class="sliderInfo.isMove ? 'move' : ''" @click.stop :style="{ left: offsetLeft }" ref="_sliderBtnRef"></i>
+      <i
+        class="_slider-btn"
+        :class="sliderInfo.isMove ? 'move' : ''"
+        @click.stop
+        :style="{ left: offsetLeft }"
+        ref="_sliderBtnRef"
+      ></i>
     </div>
     <span class="_time-amount">{{ textTotalTime }}</span>
   </div>
@@ -41,7 +47,7 @@ export default {
   methods: {
     secondToTime(time = 0) {
       time = time > 0 ? time : 0;
-      const add0 = num => (num < 10 ? `0${num}` : num);
+      const add0 = (num) => (num < 10 ? `0${num}` : num);
       const h = ~~(time / 3600);
       const m = ~~((time % 3600) / 60);
       const s = ~~(time % 60);
@@ -75,8 +81,8 @@ export default {
     },
     initVideoEvents() {
       const events = ['pause', 'canplay', 'play', 'waiting', 'timeupdate', 'durationchange', 'loadeddata'];
-      events.forEach(e => {
-        this.$video.addEventListener(e, this[`handle${e.toLowerCase().replace(/^./, f => f.toUpperCase())}`], false);
+      events.forEach((e) => {
+        this.$video.addEventListener(e, this[`handle${e.toLowerCase().replace(/^./, (f) => f.toUpperCase())}`], false);
       });
     },
     initSliderBtnEvents() {
@@ -85,7 +91,7 @@ export default {
         DragMove: isMobile ? 'touchmove' : 'mousemove',
         DragEnd: isMobile ? 'touchend' : 'mouseup'
       };
-      Object.keys(dragEventMap).forEach(key => {
+      Object.keys(dragEventMap).forEach((key) => {
         const bindRef = key === 'DragStart' ? this.$refs._sliderBtnRef : this.playerRef.$container;
         bindRef.addEventListener(dragEventMap[key], this[`handle${key}`], false);
       });
@@ -95,7 +101,7 @@ export default {
       this.textTotalTime = this.secondToTime(totalTime);
     },
     handleCanplay() {
-      this.$emit('canplay')
+      this.$emit('canplay');
     },
     handleDurationchange() {
       // 视频读取完成拿到视频长度
@@ -178,7 +184,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="stylus" scoped>
 ._progress {
   color: #fff;
   width: 100%;
@@ -186,8 +192,10 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.5em;
+  padding: 0 1em;
   box-sizing: border-box;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   ._time-current,
   ._time-amount {
     font-size: 1em;
@@ -224,13 +232,14 @@ export default {
       transform: translate(-50%, -50%);
       transition: transform 10ms;
       cursor: pointer;
-      &:after{
+      -webkit-tap-highlight-color: transparent;
+      &:after {
         content: '';
         position: absolute;
-        top: -0.3em;
-        bottom: -0.3em;
-        right: -0.3em;
-        left: -0.3em;
+        top: -0.4em;
+        bottom: -0.4em;
+        right: -0.4em;
+        left: -0.4em;
       }
       &.move {
         transform: translate(-50%, -50%) scale(1.5);

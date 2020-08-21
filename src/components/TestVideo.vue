@@ -26,10 +26,7 @@ export default {
   filters: {},
   methods: {
     fullscreen(data) {
-      this.full = data;
-      console.log('====================================');
       console.log(data);
-      console.log('====================================');
     }
   },
   created() {},
@@ -39,12 +36,9 @@ export default {
   destroyed() {}
 };
 </script>
-<style lang="scss" scoped>
+<style lang="stylus" scoped>
 .qun-video {
-  max-width: 500px;
   width: 100%;
-  min-width: 300px;
-  height: 15em;
   margin: 0 auto;
 }
 </style>

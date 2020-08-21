@@ -1,9 +1,9 @@
 <template>
-  <div class="_play-btn"
-       @click.stop="handleClick">
-       <div v-if="isWaiting">加载</div>
-       <div v-else-if="!isPlaying && !isWaiting">开始</div>
-       <div v-else-if="isPlaying && !isWaiting">暂停</div>
+  <div class="_play-btn" @click.stop="handleClick">
+    <div v-if="isStart">开始</div>
+    <div v-if="isWaiting && !isStart">加载</div>
+    <div v-else-if="!isPlaying && !isWaiting && !isStart">继续</div>
+    <div v-else-if="isPlaying && !isWaiting && !isStart">暂停</div>
   </div>
 </template>
 
@@ -32,15 +32,13 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="stylus" scoped>
 ._play-btn {
   position: absolute;
   z-index: 19;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 3.5em;
-  height: 3.5em;
   user-select: none;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;

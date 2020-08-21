@@ -1,44 +1,43 @@
 <template>
-  <div class="qun-player"
-       ref="container"
-       @click.stop="clearModeTogger">
+  <div class="qun-player" ref="container" @mouseover="isClearMode = false" @click.stop="clearModeTogger">
     <!--模拟poster -->
-    <div class="_poster"
-         :style="{backgroundImage:`url(${options.cover})`}"
-         v-show="!isPlaying&&isStart">
-    </div>
+    <div class="_poster" :style="{ backgroundImage: `url(${options.cover})` }" v-show="!isPlaying && isStart"></div>
     <template>
-      <video class="b_video-ref"
-             webkit-playsinline
-             playsinline
-             x5-video-player-fullscreen="false"
-             x-webkit-airplay="allow"
-             x5-video-player-type="h5"
-             x5-video-orientation="landscape"
-             crossorigin="anonymous"
-             ref="video"
-             tabindex="-1"
-             :muted="options.muted"
-             :loop="options.loop"
-             :preload="options.preload"
-             :poster="options.cover">
-        <source v-for="(item, index) in vUrl"
-                :key="index"
-                :src="item"
-                :type="`video/${getUrlType(item)}`">
+      <video
+        class="b_video-ref"
+        webkit-playsinline
+        playsinline
+        x5-video-player-fullscreen="false"
+        x-webkit-airplay="allow"
+        x5-video-player-type="h5"
+        x5-video-orientation="landscape"
+        crossorigin="anonymous"
+        ref="video"
+        tabindex="-1"
+        :muted="options.muted"
+        :loop="options.loop"
+        :preload="options.preload"
+        :poster="options.cover"
+      >
+        <source v-for="(item, index) in vUrl" :key="index" :src="item" :type="`video/${getUrlType(item)}`" />
         Your browser does not support the video element.
       </video>
-      <transition name="fade">
-        <PlayBtn :isPlaying.sync="isPlaying" :isStart.sync="isStart" :isWaiting.sync="isWaiting"
-                 v-show="!isClearMode" />
+      <transition name="fade-bottom">
+        <PlayBtn
+          :isPlaying.sync="isPlaying"
+          :isStart.sync="isStart"
+          :isWaiting.sync="isWaiting"
+          v-show="!isClearMode"
+        />
       </transition>
-      <transition name="fade">
-        <BaseControls @paused="handlePaused"
-                      @play="handlePlay"
-                      @wait="handleWait"
-                      @canplay="handleCanplay"
-                      @fullscreen="$emit('fullscreen',$event)"
-                      v-show="!isClearMode" />
+      <transition name="fade-bottom">
+        <BaseControls
+          @paused="handlePaused"
+          @play="handlePlay"
+          @wait="handleWait"
+          @canplay="handleCanplay"
+          v-show="!isClearMode"
+        />
       </transition>
     </template>
   </div>
@@ -57,7 +56,7 @@ export default {
   props: {
     video: {
       type: Object,
-      default: function() {
+      default: function () {
         return {};
       }
     },
@@ -132,7 +131,7 @@ export default {
       }, 500);
     },
     clearModeTogger() {
-      if (this.isStart) return;
+      if (this.isStart || !this.isPlaying) return;
       this.isClearMode = !this.isClearMode;
       if (!this.isClearMode) {
         this.setClearModeTimer();
@@ -143,7 +142,7 @@ export default {
         clearTimeout(this.clearModeTimer);
       }
       this.clearModeTimer = setTimeout(() => {
-        if (this.isMove) return;
+        if (this.isMove || !this.isPlaying) return;
         this.isClearMode = true;
         this.$emit('clearMode');
       }, 3000);
@@ -151,7 +150,7 @@ export default {
     pauseAllVideo() {
       if (this.mutex) {
         const videos = document.querySelectorAll('video:not(.b_video-ref)');
-        videos.forEach(v => {
+        videos.forEach((v) => {
           v.pause && v.pause();
         });
       }
@@ -159,9 +158,12 @@ export default {
     play() {
       if (this.isPlaying) {
         this.pauseAllVideo();
-        this.$video.play().then(() => {
-          this.setClearModeTimer();
-        }).catch((e)=>{});
+        this.$video
+          .play()
+          .then(() => {
+            this.setClearModeTimer();
+          })
+          .catch((e) => {});
       } else {
         this.$video.pause();
       }
@@ -171,7 +173,6 @@ export default {
       this.isWaiting = false;
     },
     handleWait() {
-      console.log('wait')
       this.isWaiting = true;
     },
     handlePaused() {
@@ -191,9 +192,9 @@ export default {
   mounted() {
     this.$emit('mounted');
     console.log(
-      '\n' + ' %c vue-bplayer v' + VERSION + ' %c https://github.com/boboyaohuo/vue-bplayer ' + '\n' + '\n',
-      'color: #fadfa3; background: #030307; padding:5px 0;',
-      'background: #fadfa3; padding:5px 0;'
+      '\n' + ' %c vue-bplayer v' + VERSION + ' %c https://github.com/boboyaohuo/vue-bplayer ' + '\n',
+      'color: #ff461a; background: #f5f5f5; padding:6px 0;',
+      'background: #f5f5f5; padding:6px 0;'
     );
   },
   updated() {},
@@ -205,11 +206,10 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
+<style lang="stylus" scoped>
 .qun-player {
   width: 100%;
   height: 100%;
-  min-height: 10em;
   position: relative;
   z-index: 1;
   background: #000;
@@ -238,6 +238,7 @@ export default {
     z-index: 2;
   }
   .b_video-ref {
+    display: block;
     background: #000;
     width: 100%;
     height: 100%;
@@ -250,12 +251,19 @@ export default {
     }
   }
 }
-.fade-enter-active,
-.fade-leave-active {
+.fade-center-enter-active,
+.fade-cneter-leave-active {
   transition: opacity 0.5s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+.fade-center-enter, .fade-center-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
-</style>
 
+.fade-bottom-enter-active,
+.fade-bottom-leave-active {
+  transition: bottom 0.5s;
+}
+.fade-bottom-enter, .fade-bottom-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  bottom: -3em;
+}
+</style>

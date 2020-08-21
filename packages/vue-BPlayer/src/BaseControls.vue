@@ -1,6 +1,6 @@
 <template>
   <div class="qun-base-controls">
-    <Volume :isMuted.sync="isMuted" />
+    <Volume v-if="false" :isMuted.sync="isMuted" />
     <Progress @paused="$emit('paused')" @play="$emit('play')" @wait="$emit('wait')" @canplay="$emit('canplay')" />
     <Fullscreen :isFullscreen.sync="isFullscreen" />
   </div>
@@ -38,7 +38,7 @@ export default {
   filters: {},
   methods: {
     initVideoEvents() {
-      this.$video.addEventListener('volumechange', function(e) {
+      this.$video.addEventListener('volumechange', function (e) {
         this.isMuted = e.target.muted;
       });
     }
@@ -54,7 +54,7 @@ export default {
   destroyed() {}
 };
 </script>
-<style lang="scss" scoped>
+<style lang="stylus" scoped>
 .qun-base-controls {
   position: absolute;
   bottom: 0;
@@ -70,6 +70,6 @@ export default {
   box-sizing: border-box;
   transition: all 0.3s ease;
   user-select: none;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
 }
 </style>
-

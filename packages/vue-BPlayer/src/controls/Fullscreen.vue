@@ -1,21 +1,17 @@
 <template>
-  <div class="_fullscreen"
-       @click.stop="handleClickToggle">
-    <svg viewBox="0 0 40 40"
-         version="1.1"
-         xmlns="http://www.w3.org/2000/svg"
-         xmlns:xlink="http://www.w3.org/1999/xlink">
-      <g stroke="none"
-         stroke-width="1"
-         fill="none"
-         fill-rule="evenodd"
-         stroke-linecap="round"
-         stroke-linejoin="round">
-        <g transform="translate(-670.000000, -354.000000)"
-           stroke="#FFFFFF"
-           stroke-width="5">
+  <div class="_fullscreen" @click.stop="handleClickToggle">
+    <svg
+      viewBox="0 0 40 40"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+      <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g transform="translate(-670.000000, -354.000000)" stroke="#FFFFFF" stroke-width="5">
           <g transform="translate(670.000000, 354.000000)">
-            <path d="M35,20 L35,34 C35,34.5522847 34.5522847,35 34,35 L20,35 M5,20 L5,6 C5,5.44771525 5.44771525,5 6,5 L6,5 L20,5"></path>
+            <path
+              d="M35,20 L35,34 C35,34.5522847 34.5522847,35 34,35 L20,35 M5,20 L5,6 C5,5.44771525 5.44771525,5 6,5 L6,5 L20,5"
+            ></path>
           </g>
         </g>
       </g>
@@ -53,7 +49,10 @@ export default {
     },
     setFullscreenState() {
       const fullEle =
-        document.fullscreenElement || document.mozFullScreenElement || document.msFullscreenElement || document.webkitFullscreenElement;
+        document.fullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement ||
+        document.webkitFullscreenElement;
       this.$emit('update:isFullscreen', !!fullEle);
     },
     reqFullScreen(element) {
@@ -75,7 +74,9 @@ export default {
       }
     },
     resetFullScreen() {
-      if (document.exitFullscreen) {
+      if (document.cancelFullScreen) {
+        document.cancelFullScreen();
+      } else if (document.exitFullscreen) {
         document.exitFullscreen();
       } else if (document.msExitFullscreen) {
         document.msExitFullscreen();
@@ -129,7 +130,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="stylus" scoped>
 ._fullscreen {
   width: 1.5em;
   width: 1.5em;

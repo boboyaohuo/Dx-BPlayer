@@ -1,7 +1,7 @@
 <template>
   <div class="qun-base-controls">
     <Volume :isMuted.sync="isMuted" />
-    <Progress @paused="$emit('paused')" />
+    <Progress @paused="$emit('paused')" @play="$emit('play')" @wait="$emit('wait')" @canplay="$emit('canplay')" />
     <Fullscreen :isFullscreen.sync="isFullscreen" />
   </div>
 </template>

@@ -1,7 +1,7 @@
 <template>
   <div class="_progress" @click.stop>
     <span class="_time-current">{{ textCurrentTime }}</span>
-    <div class="_slider" ref="_sliderRef" @click.stop="clickSlider">
+    <div class="_slider" :class="sliderInfo.isMove ? 'move' : ''" ref="_sliderRef" @click.stop="clickSlider">
       <div class="_slider-cur" :style="{ width: offsetLeft }"></div>
       <i class="_slider-btn" :class="sliderInfo.isMove ? 'move' : ''" @click.stop :style="{ left: offsetLeft }" ref="_sliderBtnRef"></i>
     </div>
@@ -61,6 +61,7 @@ export default {
       }
     },
     clickSlider($event) {
+      if (this.playerRef.isStart) return;
       const sliderW = this.sliderRef.offsetWidth;
       const curOffestLeft = $event.clientX - $event.target.getBoundingClientRect().left;
       this.offsetLeft = `${~~((curOffestLeft / sliderW) * 100)}%`;
@@ -70,10 +71,10 @@ export default {
       const newSecond = ~~(this.$video.duration * (parseFloat(this.offsetLeft) / 100));
       this.updateVideoTime(newSecond);
       this.updateTextTime(newSecond);
-      this.playerRef.isPlaying = true;
+      this.playerRef.setClearModeTimer();
     },
     initVideoEvents() {
-      const events = ['pause', 'play', 'waiting', 'timeupdate', 'durationchange', 'loadeddata'];
+      const events = ['pause', 'canplay', 'play', 'waiting', 'timeupdate', 'durationchange', 'loadeddata'];
       events.forEach(e => {
         this.$video.addEventListener(e, this[`handle${e.toLowerCase().replace(/^./, f => f.toUpperCase())}`], false);
       });
@@ -92,6 +93,9 @@ export default {
     handleLoadeddata() {
       const totalTime = this.$video.duration;
       this.textTotalTime = this.secondToTime(totalTime);
+    },
+    handleCanplay() {
+      this.$emit('canplay')
     },
     handleDurationchange() {
       // 视频读取完成拿到视频长度
@@ -115,9 +119,11 @@ export default {
     },
     handlePlay() {
       // 视频播放
+      this.$emit('play');
     },
     handleWaiting() {
       // 视频因点击下一帧等待
+      this.$emit('wait');
     },
     computeMoveInfo(moveX) {
       const sliderW = this.sliderRef.offsetWidth;
@@ -132,6 +138,7 @@ export default {
     handleDragStart($event) {
       $event.preventDefault();
       $event.stopPropagation();
+      if (this.playerRef.isStart) return;
       // 滑块拖拽开始
       this.sliderInfo.startX = $event.clientX || $event.changedTouches[0].clientX;
       this.sliderInfo.isMove = true;
@@ -146,8 +153,8 @@ export default {
       // 滑块拖拽移动中
       if (this.sliderInfo.isMove) {
         const { ratio, second } = this.computeMoveInfo(ClienX);
-        this.updateTextTime(second + this.sliderInfo.oldTime);
         this.updateSlider(ratio + this.sliderInfo.oldOffsetLeft);
+        this.updateTextTime(second + this.sliderInfo.oldTime);
       }
     },
     handleDragEnd($event) {
@@ -156,12 +163,9 @@ export default {
       if (this.sliderInfo.isMove) {
         const { ratio, second } = this.computeMoveInfo(ClienX);
         this.updateVideoTime(second + this.sliderInfo.oldTime);
-        // this.updateTextTime(second + this.sliderInfo.oldTime);
-        // this.updateSlider(ratio + parseFloat(this.offsetLeft));
         this.sliderInfo.isMove = false;
         this.playerRef.isMove = false;
-        this.playerRef.clearModeTogger;
-        // this.playerRef.isPlaying = true;
+        this.playerRef.setClearModeTimer();
       }
     }
   },
@@ -195,6 +199,9 @@ export default {
     border-radius: 4px;
     position: relative;
     margin: 0 1em;
+    &.move {
+      height: 0.5em;
+    }
     ._slider-cur {
       width: 0;
       height: 100%;
@@ -215,7 +222,7 @@ export default {
       top: 50%;
       left: 0;
       transform: translate(-50%, -50%);
-      transition: all 3ms;
+      transition: transform 10ms;
       cursor: pointer;
       &:after{
         content: '';
@@ -225,9 +232,9 @@ export default {
         right: -0.3em;
         left: -0.3em;
       }
-    }
-    .move {
-      transform: translate(-50%, -50%) scale(1.5);
+      &.move {
+        transform: translate(-50%, -50%) scale(1.5);
+      }
     }
   }
 }

@@ -8,7 +8,7 @@
          v-show="!isPlaying&&isStart">
     </div>
     <template>
-      <video class="_video-ref"
+      <video class="b_video-ref"
              webkit-playsinline
              playsinline
              x5-video-player-fullscreen="false"
@@ -29,11 +29,14 @@
         Your browser does not support the video element.
       </video>
       <transition name="fade">
-        <PlayBtn :isPlaying.sync="isPlaying" :isStart.sync="isStart"
+        <PlayBtn :isPlaying.sync="isPlaying" :isStart.sync="isStart" :isWaiting.sync="isWaiting"
                  v-show="!isClearMode" />
       </transition>
       <transition name="fade">
         <BaseControls @paused="handlePaused"
+                      @play="handlePlay"
+                      @wait="handleWait"
+                      @canplay="handleCanplay"
                       @fullscreen="$emit('fullscreen',$event)"
                       v-show="!isClearMode" />
       </transition>
@@ -79,6 +82,7 @@ export default {
       $container: null,
       clearModeTimer: null,
       isStart: true,
+      isWaiting: true,
       isPlaying: false,
       isMove: false,
       isClearMode: false
@@ -146,7 +150,7 @@ export default {
     },
     pauseAllVideo() {
       if (this.mutex) {
-        const videos = document.querySelectorAll('video');
+        const videos = document.querySelectorAll('video:not(.b_video-ref)');
         videos.forEach(v => {
           v.pause && v.pause();
         });
@@ -156,15 +160,25 @@ export default {
       if (this.isPlaying) {
         this.pauseAllVideo();
         this.$video.play().then(() => {
-          this.clearModeTogger();
+          this.setClearModeTimer();
         }).catch((e)=>{});
       } else {
         this.$video.pause();
       }
       this.$emit('videoPlay', this.isPlaying);
     },
+    handleCanplay() {
+      this.isWaiting = false;
+    },
+    handleWait() {
+      console.log('wait')
+      this.isWaiting = true;
+    },
     handlePaused() {
       this.isPlaying = false;
+    },
+    handlePlay() {
+      this.isPlaying = true;
     }
   },
   created() {
@@ -197,7 +211,7 @@ export default {
   height: 100%;
   min-height: 10em;
   position: relative;
-  z-index: 19;
+  z-index: 1;
   background: #000;
   overflow: hidden;
   &:fullscreen,
@@ -220,12 +234,15 @@ export default {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    position: absolute;
+    z-index: 2;
   }
-  ._video-ref {
+  .b_video-ref {
     background: #000;
     width: 100%;
     height: 100%;
-    z-index: -9;
+    z-index: 1;
+    outline: none;
     /* object-fit: cover; */
     &::-webkit-media-controls,
     &::-webkit-media-controls-enclosure {

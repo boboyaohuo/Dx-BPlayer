@@ -134,6 +134,7 @@ export default {
   width: 1.5em;
   width: 1.5em;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   svg {
     width: 100%;
     height: 100%;

@@ -192,7 +192,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1em;
+  padding-right: 1em;
   box-sizing: border-box;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;

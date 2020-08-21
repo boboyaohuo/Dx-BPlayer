@@ -22,7 +22,7 @@
         <source v-for="(item, index) in vUrl" :key="index" :src="item" :type="`video/${getUrlType(item)}`" />
         Your browser does not support the video element.
       </video>
-      <transition name="fade-bottom">
+      <transition name="fade-center">
         <PlayBtn
           :isPlaying.sync="isPlaying"
           :isStart.sync="isStart"

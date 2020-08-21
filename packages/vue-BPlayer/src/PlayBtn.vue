@@ -1,9 +1,11 @@
 <template>
-  <div class="_play-btn" @click.stop="handleClick">
-    <div v-if="isStart">开始</div>
-    <div v-if="isWaiting && !isStart">加载</div>
-    <div v-else-if="!isPlaying && !isWaiting && !isStart">继续</div>
-    <div v-else-if="isPlaying && !isWaiting && !isStart">暂停</div>
+  <div>
+    <div class="start" @click.stop="handleClick" v-if="isStart">开始</div>
+    <div class="_play-btn" @click.stop="handleClick">
+      <div v-if="isWaiting && !isStart">加载</div>
+      <div v-else-if="!isPlaying && !isWaiting && !isStart">继续</div>
+      <div v-else-if="isPlaying && !isWaiting && !isStart">暂停</div>
+    </div>
   </div>
 </template>
 
@@ -47,5 +49,18 @@ export default {
     width: 100%;
     height: 100%;
   }
+}
+.start {
+  position: absolute;
+  z-index: 39;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  width: 5em;
+  height: 5em;
+  line-height: 5em;
+  border-radius: 50%;
 }
 </style>

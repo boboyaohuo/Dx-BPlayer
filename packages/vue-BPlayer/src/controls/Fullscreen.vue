@@ -103,6 +103,7 @@ export default {
         this.$container.removeEventListener('webkitfullscreenchange', this.fullscreenchange);
         document.removeEventListener('msfullscreenchange', this.docfullscreenchange);
         document.removeEventListener('MSFullscreenChange', this.docfullscreenchange);
+        document.removeEventListener('x5videoenterfullscreen', this.docfullscreenchange)
       }
     },
     bindChangeEvent() {
@@ -114,6 +115,7 @@ export default {
         this.$container.addEventListener('webkitfullscreenchange', this.fullscreenchange);
         document.addEventListener('msfullscreenchange', this.docfullscreenchange);
         document.addEventListener('MSFullscreenChange', this.docfullscreenchange);
+        document.addEventListener('x5videoenterfullscreen', this.docfullscreenchange)
       }
     }
   },

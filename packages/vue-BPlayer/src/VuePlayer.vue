@@ -1,5 +1,5 @@
 <template>
-  <div class="qun-player" ref="container" @mouseover="isClearMode = false" @click.stop="clearModeTogger">
+  <div class="qun-player" ref="container" @click.stop="clearModeTogger">
     <!--模拟poster -->
     <div class="_poster" :style="{ backgroundImage: `url(${options.cover})` }" v-show="!isPlaying && isStart"></div>
     <template>

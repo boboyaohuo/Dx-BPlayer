@@ -62,5 +62,7 @@ export default {
   height: 5em;
   line-height: 5em;
   border-radius: 50%;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 </style>

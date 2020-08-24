@@ -36,7 +36,8 @@
           @play="handlePlay"
           @wait="handleWait"
           @canplay="handleCanplay"
-          v-show="!isClearMode"
+          @fullscreen="handleFullscreen"
+          v-show="!isClearMode && !isStart"
         />
       </transition>
     </template>
@@ -180,6 +181,9 @@ export default {
     },
     handlePlay() {
       this.isPlaying = true;
+    },
+    handleFullscreen(newData) {
+      this.setClearModeTimer();
     }
   },
   created() {

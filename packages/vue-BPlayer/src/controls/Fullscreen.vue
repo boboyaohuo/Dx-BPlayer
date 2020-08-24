@@ -27,9 +27,6 @@ export default {
       default: false
     }
   },
-  data() {
-    return {};
-  },
   computed: {
     $video() {
       return this.$parent.$parent.$video;
@@ -53,6 +50,9 @@ export default {
         document.mozFullScreenElement ||
         document.msFullscreenElement ||
         document.webkitFullscreenElement;
+      if (fullEle && fullEle !== this.$container) {
+        return;
+      }
       this.$emit('update:isFullscreen', !!fullEle);
     },
     reqFullScreen(element) {

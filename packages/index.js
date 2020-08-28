@@ -1,6 +1,6 @@
-import vueBPlayer from './vue-BPlayer';
+import DxBPlayer from './dx-BPlayer';
 const version = require('../package.json').version;
-const components = [vueBPlayer];
+const components = [DxBPlayer];
 
 const install = function(Vue) {
   if (install.installed) return;
@@ -16,5 +16,5 @@ export default {
   install,
   version,
   // 以下是具体的组件列表
-  vueBPlayer
+  DxBPlayer
 };

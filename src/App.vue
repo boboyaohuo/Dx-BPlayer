@@ -1,60 +1,34 @@
 <template>
   <div id="app">
-    <section class="main">
-      <TestVideo/>
-    </section>
+    <div style="width: 100vw; height: 56vw;">
+      <DxBPlayer :mutex="true" :BPlayer="videoOptions" />
+    </div>
   </div>
 </template>
 
 <script>
-import TestVideo from './components/TestVideo.vue';
-
 export default {
   name: 'app',
-  components: {
-    TestVideo
-  },
   data() {
     return {
-    }
+      videoOptions: {
+        url: 'https://api.dogecloud.com/player/get.mp4?vcode=5ac682e6f8231991&userId=17&ext=.mp4',
+        cover: 'https://i.loli.net/2019/06/06/5cf8c5d9c57b510947.png'
+      }
+    };
   }
 };
 </script>
 
 <style lang="stylus">
 html,
-body {
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #f1f1f1;
-}
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  .header {
-    padding-top: 20px;
-    overflow: hidden;
-    width: 100%;
-    height: 150px;
-    color: #fff;
-    background-color: #159957;
-    background-image: linear-gradient(120deg, #1b9fd4, #159957);
-  }
-  .github-corner {
-    position: absolute;
-    top: 0;
-    border: 0;
-    right: 0;
-    z-index: 1;
-  }
-  .main {
-    display: flex;
-    flex-direction: column;
-  }
-}
+body
+  padding 0
+  margin 0
+  width 100%
+  height 100%
+  background-color #f1f1f1
+#app
+  width 100%
+  height 2000px
 </style>

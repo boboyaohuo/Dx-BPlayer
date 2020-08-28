@@ -1,24 +1,30 @@
 <template>
-  <div class="_progress" @click.stop>
-    <span class="_time-current">{{ textCurrentTime }}</span>
-    <div class="_slider" :class="sliderInfo.isMove ? 'move' : ''" ref="_sliderRef" @click.stop="clickSlider">
-      <div class="_slider-cur" :style="{ width: offsetLeft }"></div>
+  <div class="bplayer_progress" @click.stop>
+    <span class="bplayer_time-current">{{ textCurrentTime }}</span>
+    <div
+      class="bplayer_slider"
+      :class="sliderInfo.isMove ? 'move' : ''"
+      ref="bplayer_sliderRef"
+      @click.stop="clickSlider"
+    >
+      <div class="bplayer_slider-cur" :style="{ width: offsetLeft }"></div>
       <i
-        class="_slider-btn"
+        class="bplayer_slider-btn"
         :class="sliderInfo.isMove ? 'move' : ''"
         @click.stop
         :style="{ left: offsetLeft }"
-        ref="_sliderBtnRef"
+        ref="bplayer_sliderBtnRef"
       ></i>
     </div>
-    <span class="_time-amount">{{ textTotalTime }}</span>
+    <span class="bplayer_time-amount">{{ textTotalTime }}</span>
   </div>
 </template>
 
 <script>
 const isMobile = /mobile/i.test(window.navigator.userAgent);
 export default {
-  props: {},
+  name: 'Progress',
+  inject: ['$player'],
   data() {
     return {
       textTotalTime: '00:00',
@@ -33,21 +39,19 @@ export default {
     };
   },
   computed: {
-    playerRef() {
-      return this.$parent.$parent;
-    },
-    $video() {
-      return this.$parent.$parent.$video;
-    },
     sliderRef() {
-      return this.$refs._sliderRef;
+      return this.$refs.bplayer_sliderRef;
     }
   },
-  watch: {},
+  watch: {
+    offsetLeft(newData, oldData) {
+      this.$player.offsetLeft = newData;
+    }
+  },
   methods: {
     secondToTime(time = 0) {
       time = time > 0 ? time : 0;
-      const add0 = (num) => (num < 10 ? `0${num}` : num);
+      const add0 = num => (num < 10 ? `0${num}` : num);
       const h = ~~(time / 3600);
       const m = ~~((time % 3600) / 60);
       const s = ~~(time % 60);
@@ -63,26 +67,30 @@ export default {
     },
     updateVideoTime(second) {
       if (second) {
-        this.$video.currentTime = second;
+        this.$player.$video.currentTime = second;
       }
     },
     clickSlider($event) {
-      if (this.playerRef.isStart) return;
+      if (this.$player.isStart) return;
       const sliderW = this.sliderRef.offsetWidth;
       const curOffestLeft = $event.clientX - $event.target.getBoundingClientRect().left;
       this.offsetLeft = `${~~((curOffestLeft / sliderW) * 100)}%`;
       this.updateVideoState();
     },
     updateVideoState() {
-      const newSecond = ~~(this.$video.duration * (parseFloat(this.offsetLeft) / 100));
+      const newSecond = ~~(this.$player.$video.duration * (parseFloat(this.offsetLeft) / 100));
       this.updateVideoTime(newSecond);
       this.updateTextTime(newSecond);
-      this.playerRef.setClearModeTimer();
+      this.$player.setClearModeTimer();
     },
     initVideoEvents() {
       const events = ['pause', 'canplay', 'play', 'waiting', 'timeupdate', 'durationchange', 'loadeddata'];
-      events.forEach((e) => {
-        this.$video.addEventListener(e, this[`handle${e.toLowerCase().replace(/^./, (f) => f.toUpperCase())}`], false);
+      events.forEach(e => {
+        this.$player.$video.addEventListener(
+          e,
+          this[`handle${e.toLowerCase().replace(/^./, f => f.toUpperCase())}`],
+          false
+        );
       });
     },
     initSliderBtnEvents() {
@@ -91,45 +99,46 @@ export default {
         DragMove: isMobile ? 'touchmove' : 'mousemove',
         DragEnd: isMobile ? 'touchend' : 'mouseup'
       };
-      Object.keys(dragEventMap).forEach((key) => {
-        const bindRef = key === 'DragStart' ? this.$refs._sliderBtnRef : this.playerRef.$container;
+      Object.keys(dragEventMap).forEach(key => {
+        // const bindRef = key === 'DragStart' ? this.$refs.bplayer_sliderBtnRef : this.$player.$container;
+        const bindRef = this.$refs.bplayer_sliderBtnRef;
         bindRef.addEventListener(dragEventMap[key], this[`handle${key}`], false);
       });
     },
     handleLoadeddata() {
-      const totalTime = this.$video.duration;
+      const totalTime = this.$player.$video.duration;
       this.textTotalTime = this.secondToTime(totalTime);
     },
     handleCanplay() {
-      this.$emit('canplay');
+      this.$player.handleCanplay();
     },
     handleDurationchange() {
       // 视频读取完成拿到视频长度
-      const totalTime = this.$video.duration;
+      const totalTime = this.$player.$video.duration;
       this.textTotalTime = this.secondToTime(totalTime);
     },
     handleTimeupdate() {
       if (this.sliderInfo.isMove) return;
       // 视频播放时间变化执行
-      const currentTime = this.$video.currentTime;
-      const ratio = (currentTime / this.$video.duration) * 100;
+      const currentTime = this.$player.$video.currentTime;
+      const ratio = (currentTime / this.$player.$video.duration) * 100;
       this.updateTextTime(currentTime);
       this.updateSlider(ratio);
     },
     handlePause() {
       // 视频暂停
-      const totalTime = this.$video.duration;
-      const currentTime = this.$video.currentTime;
-      if (currentTime === totalTime) this.playerRef.isPlaying = false;
-      this.$emit('paused');
+      const totalTime = this.$player.$video.duration;
+      const currentTime = this.$player.$video.currentTime;
+      if (currentTime === totalTime) this.$player.isPlaying = false;
+      this.$player.handlePause();
     },
     handlePlay() {
       // 视频播放
-      this.$emit('play');
+      this.$player.handlePlay();
     },
     handleWaiting() {
       // 视频因点击下一帧等待
-      this.$emit('wait');
+      this.$player.handleWait();
     },
     computeMoveInfo(moveX) {
       const sliderW = this.sliderRef.offsetWidth;
@@ -138,18 +147,18 @@ export default {
         offset = offset > 0 ? sliderW : -sliderW;
       }
       const ratio = (offset / sliderW) * 100;
-      const second = this.$video.duration * (ratio / 100);
+      const second = this.$player.$video.duration * (ratio / 100);
       return { ratio, second };
     },
     handleDragStart($event) {
       $event.preventDefault();
       $event.stopPropagation();
-      if (this.playerRef.isStart) return;
+      if (this.$player.isStart) return;
       // 滑块拖拽开始
       this.sliderInfo.startX = $event.clientX || $event.changedTouches[0].clientX;
       this.sliderInfo.isMove = true;
-      this.playerRef.isMove = true;
-      this.sliderInfo.oldTime = this.$video.currentTime;
+      this.$player.isMove = true;
+      this.sliderInfo.oldTime = this.$player.$video.currentTime;
       this.sliderInfo.oldOffsetLeft = parseFloat(this.offsetLeft);
     },
     handleDragMove($event) {
@@ -170,8 +179,8 @@ export default {
         const { ratio, second } = this.computeMoveInfo(ClienX);
         this.updateVideoTime(second + this.sliderInfo.oldTime);
         this.sliderInfo.isMove = false;
-        this.playerRef.isMove = false;
-        this.playerRef.setClearModeTimer();
+        this.$player.isMove = false;
+        this.$player.setClearModeTimer();
       }
     }
   },
@@ -185,66 +194,52 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-._progress {
-  color: #fff;
-  width: 100%;
-  height: 2em;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-right: 1em;
-  box-sizing: border-box;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  ._time-current,
-  ._time-amount {
-    font-size: 1em;
-  }
-  ._slider {
-    width: 100%;
-    height: 0.4em;
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 4px;
-    position: relative;
-    margin: 0 1em;
-    &.move {
-      height: 0.5em;
-    }
-    ._slider-cur {
-      width: 0;
-      height: 100%;
-      border-radius: 4px;
-      background-color: #fff;
-      position: absolute;
-      top: 0;
-      left: 0;
-      transition: all 3ms;
-    }
-    ._slider-btn {
-      width: 1em;
-      height: 1em;
-      display: inline-block;
-      background-color: #fff;
-      border-radius: 50%;
-      position: absolute;
-      top: 50%;
-      left: 0;
-      transform: translate(-50%, -50%);
-      transition: transform 10ms;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      &:after {
-        content: '';
-        position: absolute;
-        top: -0.4em;
-        bottom: -0.4em;
-        right: -0.4em;
-        left: -0.4em;
-      }
-      &.move {
-        transform: translate(-50%, -50%) scale(1.5);
-      }
-    }
-  }
-}
+.bplayer_progress
+  color #fff
+  flex 1
+  height 0.1875em
+  display flex
+  align-items center
+  justify-content space-between
+  margin 0 0.3125em
+  cursor pointer
+  -webkit-tap-highlight-color transparent
+  .bplayer_time-current,
+  .bplayer_time-amount
+    font-size 0.6785em
+    color #fff
+  .bplayer_slider
+    width 100%
+    height 0.1875em
+    background rgba(15, 15, 15, 0.4)
+    border-radius 0.3125em
+    position relative
+    margin 0 0.78125em
+    &.move
+      height 0.25em
+    .bplayer_slider-cur
+      width 0
+      height 100%
+      border-radius 0.3125em
+      background-color #FF461A
+      position absolute
+      top 0
+      left 0
+    .bplayer_slider-btn
+      box-sizing content-box
+      width 0.625em
+      height 0.625em
+      display inline-block
+      background-color #FF461A
+      background-clip content-box
+      border-radius 50%
+      position absolute
+      top 50%
+      left 0
+      transform translate(-50%, -50%)
+      cursor pointer
+      -webkit-tap-highlight-color: transparent
+      border 0.25em solid rgba(249, 101, 66, 0.4)
+      &.move
+        transform translate(-50%, -50%) scale(1.2)
 </style>

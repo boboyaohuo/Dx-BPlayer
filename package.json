@@ -1,21 +1,21 @@
 {
-  "name": "vue-bplayer",
+  "name": "dx-bplayer",
   "version": "0.1.0",
   "description": "This is a simple HTML5 video player based on Vue.",
-  "main": "lib/vue-bplayer.umd.min.js",
+  "main": "lib/dx-bplayer.umd.min.js",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lib": "vue-cli-service build --target lib --name vue-bplayer --dest lib packages/index.js"
+    "lib": "vue-cli-service build --target lib --name dx-bplayer --dest lib packages/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/boboyaohuo/Vue-BPlayer.git"
+    "url": "https://github.com/boboyaohuo/Dx-BPlayer.git"
   },
   "keywords": [
     "vue",
-    "vue-BPlayer",
+    "Dx-BPlayer",
     "BPlayer",
     "player",
     "video",
@@ -24,9 +24,9 @@
   "author": "wujianbo",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/boboyaohuo/Vue-BPlayer/issues"
+    "url": "https://github.com/boboyaohuo/Dx-BPlayer/issues"
   },
-  "homepage": "https://github.com/boboyaohuo/Vue-BPlayer#readme",
+  "homepage": "https://github.com/boboyaohuo/Dx-BPlayer#readme",
   "dependencies": {
     "vue": "^2.6.11"
   },

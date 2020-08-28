@@ -61,7 +61,7 @@ import StartBtn from './StartBtn';
 const VERSION = require('../../../package.json').version;
 
 export default {
-  name: 'VueBPlayer',
+  name: 'DxBPlayer',
   provide() {
     return {
       $player: this

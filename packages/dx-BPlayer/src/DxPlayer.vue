@@ -72,15 +72,11 @@ export default {
     StartBtn
   },
   props: {
-    BPlayer: {
+    options: {
       type: Object,
       default: function() {
         return {};
       }
-    },
-    imageUrl: {
-      type: String,
-      default: ''
     },
     mutex: {
       type: Boolean,
@@ -126,7 +122,7 @@ export default {
   computed: {
     // url数组判断
     vUrl() {
-      let url = this.BPlayer.url || [];
+      let url = this.options.url || [];
       if (typeof url === 'string') {
         url = [url];
       } else if (Object.prototype.toString.call(url) === '[object Object]') {
@@ -137,7 +133,7 @@ export default {
     },
     // 合并默认和用户自定义属性配置
     options() {
-      return Object.assign({}, this.baseVideo, this.BPlayer);
+      return Object.assign({}, this.baseVideo, this.options);
     }
   },
   methods: {

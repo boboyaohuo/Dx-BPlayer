@@ -8,6 +8,11 @@ npm install dx-bplayer -S
 ```
 
 ## Props
+
 | Name | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
 | options | Object | -- | all player options |
+
+## License
+
+This content is released under the MIT License.

@@ -19,13 +19,6 @@ export default {
         this.reqFullScreen(this.$player.$container);
       }
     },
-    handleHorizontal() {
-      if (window.orientation == 90 || window.orientation == -90) {
-        this.$player.isHorizontal = true;
-      } else {
-        this.$player.isHorizontal = false;
-      }
-    },
     setFullscreenState() {
       const fullEle =
         document.fullscreenElement ||
@@ -88,7 +81,6 @@ export default {
         document.removeEventListener('MSFullscreenChange', this.docfullscreenchange);
         document.removeEventListener('x5videoenterfullscreen', this.docfullscreenchange);
       }
-      window.removeEventListener('orientationchange', this.handleHorizontal);
     },
     bindChangeEvent() {
       if (/Firefox/.test(navigator.userAgent)) {
@@ -101,7 +93,6 @@ export default {
         document.addEventListener('MSFullscreenChange', this.docfullscreenchange);
         document.addEventListener('x5videoenterfullscreen', this.docfullscreenchange);
       }
-      window.addEventListener('orientationchange', this.handleHorizontal);
     }
   },
   mounted() {

@@ -1,7 +1,7 @@
 <template>
   <div
     class="dx-bplayer"
-    :class="[isFixed ? 'fixed' : '', isHorizontal ? 'fullscreen' : '']"
+    :class="[isFixed ? 'fixed' : '', isFullscreen ? 'fullscreen' : '']"
     ref="bplayer_container"
     @click.stop="clearModeTogger"
   >
@@ -105,7 +105,6 @@ export default {
       isClearMode: false,
       isFixed: false,
       isFullscreen: false,
-      isHorizontal: false,
       offsetLeft: 0
     };
   },
@@ -120,17 +119,6 @@ export default {
     }
   },
   computed: {
-    // url数组判断
-    vUrl() {
-      let url = this.options.url || [];
-      if (typeof url === 'string') {
-        url = [url];
-      } else if (Object.prototype.toString.call(url) === '[object Object]') {
-        console.warn(new Error('视频URL只接受String或者Array'));
-        return [];
-      }
-      return url;
-    },
     // 合并默认和用户自定义属性配置
     options() {
       return Object.assign({}, this.baseVideo, this.playerOptions);
@@ -241,24 +229,11 @@ export default {
       this.isPlaying = false;
       this.isClearMode = false;
       this.$emit('close');
-    },
-    // 页面滚动
-    handleScroll() {
-      // 获取页面滚动位置
-      this.scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      this.markTop = document.getElementById('bplayer-video').offsetHeight;
-      // 显示隐藏判断
-      if (this.scrollTop > this.markTop && this.isPlaying) {
-        this.isFixed = true;
-      } else {
-        this.isFixed = false;
-      }
     }
   },
   created() {
     this.$emit('created');
     this.$nextTick(() => {
-      window.addEventListener('scroll', this.handleScroll, true); // 进入页面加载滚轮滚动事件
       this.init();
     });
   },
@@ -274,7 +249,6 @@ export default {
     this.$emit('beforeDestroy');
   },
   destroyed() {
-    window.removeEventListener('scroll', this.handleScroll, true); // 离开页面清除（移除）滚轮滚动事件
     this.$emit('destroyed');
   }
 };

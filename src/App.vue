@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div style="width: 100vw; height: 56vw;">
-      <DxBPlayer :mutex="true" :options="videoOptions" />
+      <DxBPlayer :mutex="true" :playerOptions="videoOptions" />
     </div>
   </div>
 </template>

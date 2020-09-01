@@ -215,6 +215,7 @@ export default {
     border-radius 0.3125em
     position relative
     margin 0 0.78125em
+    touch-action none
     &.move
       height 0.25em
     .bplayer_slider-cur

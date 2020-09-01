@@ -72,7 +72,7 @@ export default {
     StartBtn
   },
   props: {
-    options: {
+    playerOptions: {
       type: Object,
       default: function() {
         return {};
@@ -133,7 +133,7 @@ export default {
     },
     // 合并默认和用户自定义属性配置
     options() {
-      return Object.assign({}, this.baseVideo, this.options);
+      return Object.assign({}, this.baseVideo, this.playerOptions);
     }
   },
   methods: {

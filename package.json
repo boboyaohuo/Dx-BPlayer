@@ -27,10 +27,8 @@
     "url": "https://github.com/boboyaohuo/Dx-BPlayer/issues"
   },
   "homepage": "https://github.com/boboyaohuo/Dx-BPlayer#readme",
-  "dependencies": {
-    "vue": "^2.6.11"
-  },
   "devDependencies": {
+    "vue": "^2.6.11",
     "@vue/cli-plugin-babel": "^3.9.0",
     "@vue/cli-service": "^3.9.0",
     "stylus": "^0.54.5",

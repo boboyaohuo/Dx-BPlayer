@@ -2,6 +2,12 @@
 
 This is a simple HTML5 video player based on Vue.
 
+[![npm](https://img.shields.io/npm/v/dx-player.svg?style=flat-square)](https://www.npmjs.com/package/dx-bplayer)
+[![npm](https://img.shields.io/npm/l/dx-bplayer.svg?style=flat-square)](https://github.com/boboyaohuo/dx-bplayer/LICENSE)
+[![npm](https://img.shields.io/npm/dt/dx-bplayer.svg?style=flat-square)](https://www.npmjs.com/package/dx-bplayer)
+
+## Introduction
+
 ![avatar](https://raw.githubusercontent.com/boboyaohuo/staticFile/master/image/25.png)
 
 ## Install

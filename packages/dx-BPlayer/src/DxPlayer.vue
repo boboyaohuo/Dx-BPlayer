@@ -261,8 +261,6 @@ export default {
   z-index 1
   background #000
   overflow hidden
-  &.fullscreen >>> div, span, i
-    font-size 22px !important
   &:fullscreen,
   &:-webkit-full-screen,
   &:-moz-full-screen,

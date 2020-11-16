@@ -14,6 +14,8 @@ This is a simple HTML5 video player based on Vue.
 
 ```bash
 npm install dx-bplayer -S
+or
+yarn add dx-bplayer
 ```
 
 ## Use
@@ -27,7 +29,7 @@ Vue.use(DxBPlayer)
 
 ```js
 <template>
-  <DxBPlayer ref="DxBPlayer" :options="options" @created="created" />
+  <DxBPlayer ref="DxBPlayer" :playerOptions="options" @created="created" />
 </template>
 <script>
   export default {
@@ -56,13 +58,13 @@ Vue.use(DxBPlayer)
 
 ## Props
 
-| Name          | Type    | Default | Description        |
-| ------------- | ------- | ------- | ------------------ |
-| options       | Object  | --      | all player options |
-| options.url   | String  | --      | video resources    |
-| options.cover | String  | --      | video cover        |
-| options.muted | Boolean | false   | video mute         |
-| options.loop  | Boolean | false   | video loop         |
+| Name                | Type    | Default | Description        |
+| ------------------- | ------- | ------- | ------------------ |
+| playerOptions       | Object  | --      | all player options |
+| playerOptions.url   | String  | --      | video resources    |
+| playerOptions.cover | String  | --      | video cover        |
+| playerOptions.muted | Boolean | false   | video mute         |
+| playerOptions.loop  | Boolean | false   | video loop         |
 
 ## Event
 | Name          | Description             |

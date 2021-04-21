@@ -7,7 +7,7 @@
   >
     <div
       class="bplayer_poster"
-      :style="{ backgroundImage: `url(${options.cover})` }"
+      :style="{ backgroundImage: `url(${options.poster})` }"
       v-show="!isPlaying && isStart"
     ></div>
     <template>
@@ -87,13 +87,13 @@ export default {
     return {
       baseVideo: {
         url: '',
-        cover: '',
+        poster: '',
         muted: false,
         loop: false,
         preload: 'auto',
-        poster: '',
         volume: 1,
-        autoplay: false
+        autoplay: false,
+        scrollFixed: false
       },
       $video: null,
       $container: null,
@@ -116,6 +116,12 @@ export default {
       } else {
         this.$emit('pause');
       }
+    },
+    isFixed(newData, oldData) {
+      this.$emit('fixed', newData);
+    },
+    isClearMode(newData, oldData) {
+      this.$emit('clearMode', newData);
     }
   },
   computed: {
@@ -137,16 +143,14 @@ export default {
       this.$video.load();
       this.initPlayer();
       this.$emit('ready');
-      setTimeout(() => {
-        this.isPlaying = this.options.autoplay;
-      }, 300);
     },
     // 初始化音量及静音
     initPlayer() {
-      // this.$video.volume = this.options.volume;
-      // setTimeout(() => {
-      //   this.$video.muted = false;
-      // }, 500);
+      this.$video.volume = this.options.volume;
+      setTimeout(() => {
+        this.isPlaying = this.options.autoplay;
+        this.$video.muted = false;
+      }, 200);
     },
     // 隐藏或显示控件 *注：未开始播放或暂停播放不可以隐藏控件
     clearModeTogger() {
@@ -173,7 +177,7 @@ export default {
     pauseAllVideo() {
       if (this.mutex) {
         const videos = document.querySelectorAll('video:not(.bplayer-video)');
-        videos.forEach(v => {
+        videos.forEach((v) => {
           v.pause && v.pause();
         });
       }
@@ -187,7 +191,7 @@ export default {
           .then(() => {
             this.setClearModeTimer();
           })
-          .catch(e => {});
+          .catch((e) => {});
       } else {
         this.$video.pause();
       }
@@ -229,11 +233,28 @@ export default {
       this.isPlaying = false;
       this.isClearMode = false;
       this.$emit('close');
+    },
+    // 页面滚动
+    handleScroll() {
+      // 获取页面滚动位置
+      this.scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      this.markTop = this.$refs.bplayer_video.offsetTop + this.$refs.bplayer_video.offsetHeight;
+      // 显示隐藏判断
+      if (this.scrollTop > this.markTop && this.isPlaying) {
+        this.isFixed = true;
+      } else if (this.scrollTop > this.markTop && this.isFixed) {
+        this.isFixed = true;
+      } else {
+        this.isFixed = false;
+      }
     }
   },
   created() {
     this.$emit('created');
     this.$nextTick(() => {
+      if (this.options.scrollFixed) {
+        window.addEventListener('scroll', this.handleScroll, true); // 进入页面加载滚轮滚动事件
+      }
       this.init();
     });
   },
@@ -249,6 +270,7 @@ export default {
     this.$emit('beforeDestroy');
   },
   destroyed() {
+    window.removeEventListener('scroll', this.handleScroll, true); // 离开页面清除（移除）滚轮滚动事件
     this.$emit('destroyed');
   }
 };
@@ -277,7 +299,7 @@ export default {
   &.fixed
     position fixed
     z-index 99
-    bottom 6.25em
+    top 2.25em
     right 0.625em
     width 13.125em
     height 7.875em

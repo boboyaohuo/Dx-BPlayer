@@ -63,8 +63,12 @@ Vue.use(DxBPlayer)
 | playerOptions       | Object  | --      | all player options |
 | playerOptions.url   | String  | --      | video resources    |
 | playerOptions.cover | String  | --      | video cover        |
+| playerOptions.preload | String  | --      | video preload        |
 | playerOptions.muted | Boolean | false   | video mute         |
+| playerOptions.volume | Number | 1   | video volume         |
 | playerOptions.loop  | Boolean | false   | video loop         |
+| playerOptions.autoplay  | Boolean | false   | video autoplay         |
+| playerOptions.scrollFixed  | Boolean | false   | video scrolling fixed         |
 
 ## Event
 | Name          | Description             |
@@ -80,6 +84,7 @@ Vue.use(DxBPlayer)
 | canplay       | video canplay           |
 | wait          | video waiting           |
 | fullscreen    | video fullscreen        |
+| fixed         | video fixed change      |
 
 ## License
 

@@ -84,7 +84,7 @@ export default {
       this.$player.setClearModeTimer();
     },
     initVideoEvents() {
-      const events = ['pause', 'canplay', 'play', 'waiting', 'timeupdate', 'durationchange', 'loadeddata'];
+      const events = ['canplay', 'play', 'waiting', 'timeupdate', 'durationchange', 'loadeddata'];
       events.forEach(e => {
         this.$player.$video.addEventListener(
           e,

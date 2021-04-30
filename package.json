@@ -1,6 +1,6 @@
 {
   "name": "dx-bplayer",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "This is a simple HTML5 video player based on Vue.",
   "main": "lib/dx-bplayer.umd.min.js",
   "private": false,

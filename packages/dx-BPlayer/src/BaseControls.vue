@@ -3,6 +3,8 @@
     <PlayBtn />
     <Volume />
     <Progress />
+    <Speed />
+    <Pip />
     <Fullscreen />
   </div>
 </template>
@@ -11,12 +13,16 @@ import PlayBtn from './Controls/PlayBtn';
 import Volume from './Controls/Volume';
 import Progress from './Controls/Progress';
 import Fullscreen from './Controls/Fullscreen';
+import Speed from './Controls/Speed';
+import Pip from './Controls/Pip';
 export default {
   name: 'BaseControls',
   components: {
     PlayBtn,
     Volume,
     Progress,
+    Speed,
+    Pip,
     Fullscreen
   }
 };

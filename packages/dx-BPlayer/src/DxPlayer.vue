@@ -45,11 +45,12 @@
         </transition>
       </div>
       <transition name="fade-center">
-        <div class="bplayer_slider" v-if="(isClearMode && !isStart) || isFixed">
+                <div class="bplayer_slider" v-if="(isClearMode && !isStart) || isFixed">
+          <div class="bplayer_slider-buffered" :style="{ width: bufferedLeft }"></div>
           <div class="bplayer_slider-cur" :style="{ width: offsetLeft }"></div>
         </div>
       </transition>
-      <div v-show="isFixed">
+            <div v-show="isFixed">
         <div class="bplayer-close" @click="handleClose">×</div>
       </div>
     </template>
@@ -93,7 +94,9 @@ export default {
         preload: 'auto',
         volume: 1,
         autoplay: false,
-        scrollFixed: false
+        scrollFixed: false,
+        playbackRate: 1,
+        playbackRates: [0.5, 1, 1.25, 1.5, 2]
       },
       $video: null,
       $container: null,
@@ -105,7 +108,8 @@ export default {
       isClearMode: false,
       isFixed: false,
       isFullscreen: false,
-      offsetLeft: 0
+             offsetLeft: 0,
+      bufferedLeft: '0%'
     };
   },
   watch: {
@@ -144,9 +148,62 @@ export default {
       this.initPlayer();
       this.$emit('ready');
     },
+    // 更新缓冲条（提供给迷你条复用）
+    updateBuffered() {
+      try {
+        const video = this.$video;
+        if (!video || !video.buffered || video.buffered.length === 0) return;
+        const end = video.buffered.end(video.buffered.length - 1);
+        const duration = video.duration || 0;
+        const ratio = duration ? Math.min(100, Math.max(0, (end / duration) * 100)) : 0;
+        this.bufferedLeft = `${ratio}%`;
+      } catch (e) {}
+    },
+    // 键盘快捷键
+    handleKeydown(event) {
+      if (!this.$container || this.isFixed) return;
+      const key = event.key.toLowerCase();
+      // 仅当焦点在播放器或窗口时响应
+      const isFocusInside = this.$container.contains(document.activeElement) || document.activeElement === document.body;
+      if (!isFocusInside) return;
+      switch (key) {
+        case ' ': // 空格
+        case 'k':
+          event.preventDefault();
+          this.isPlaying ? this.handlePause() : this.handlePlay();
+          break;
+        case 'arrowleft':
+          this.$video.currentTime = Math.max(0, (this.$video.currentTime || 0) - 5);
+          break;
+        case 'arrowright':
+          this.$video.currentTime = Math.min(this.$video.duration || 0, (this.$video.currentTime || 0) + 5);
+          break;
+        case 'arrowup':
+          this.$video.volume = Math.min(1, (this.$video.volume || 0) + 0.05);
+          break;
+        case 'arrowdown':
+          this.$video.volume = Math.max(0, (this.$video.volume || 0) - 0.05);
+          break;
+        case 'f':
+          this.handleFullscreen(!this.isFullscreen);
+          break;
+        case 'm':
+          this.handleMute();
+          break;
+        case ',': // 减速
+          this.$video.playbackRate = Math.max(0.25, (this.$video.playbackRate || 1) - 0.25);
+          break;
+        case '.': // 加速
+          this.$video.playbackRate = Math.min(3, (this.$video.playbackRate || 1) + 0.25);
+          break;
+      }
+    },
     // 初始化音量及静音
-    initPlayer() {
+        initPlayer() {
       this.$video.volume = this.options.volume;
+      try {
+        this.$video.playbackRate = Number(this.options.playbackRate) || 1;
+      } catch (e) {}
       setTimeout(() => {
         this.isPlaying = this.options.autoplay;
         this.$video.muted = false;
@@ -249,12 +306,13 @@ export default {
       }
     }
   },
-  created() {
+    created() {
     this.$emit('created');
     this.$nextTick(() => {
       if (this.options.scrollFixed) {
         window.addEventListener('scroll', this.handleScroll, true); // 进入页面加载滚轮滚动事件
       }
+      window.addEventListener('keydown', this.handleKeydown, true);
       this.init();
     });
   },
@@ -271,6 +329,7 @@ export default {
   },
   destroyed() {
     window.removeEventListener('scroll', this.handleScroll, true); // 离开页面清除（移除）滚轮滚动事件
+    window.removeEventListener('keydown', this.handleKeydown, true);
     this.$emit('destroyed');
   }
 };
@@ -347,6 +406,14 @@ export default {
     width 100%
     height 0.125em
     background rgba(15, 15, 15, 0.4)
+    .bplayer_slider-buffered
+      width 0
+      height 100%
+      border-radius 0.3125em
+      background-color rgba(255,255,255,0.25)
+      position absolute
+      top 0
+      left 0
     .bplayer_slider-cur
       width 0
       height 100%

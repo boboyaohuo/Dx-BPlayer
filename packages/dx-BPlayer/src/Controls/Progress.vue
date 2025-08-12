@@ -7,6 +7,7 @@
       ref="bplayer_sliderRef"
       @click.stop="clickSlider"
     >
+      <div class="bplayer_slider-buffered" :style="{ width: bufferedLeft }"></div>
       <div class="bplayer_slider-cur" :style="{ width: offsetLeft }"></div>
       <i
         class="bplayer_slider-btn"
@@ -30,6 +31,7 @@ export default {
       textTotalTime: '00:00',
       textCurrentTime: '00:00',
       offsetLeft: 0,
+      bufferedLeft: '0%',
       sliderInfo: {
         isMove: false,
         startX: 0,
@@ -84,7 +86,7 @@ export default {
       this.$player.setClearModeTimer();
     },
     initVideoEvents() {
-      const events = ['canplay', 'play', 'waiting', 'timeupdate', 'durationchange', 'loadeddata'];
+      const events = ['canplay', 'play', 'waiting', 'timeupdate', 'durationchange', 'loadeddata', 'progress'];
       events.forEach(e => {
         this.$player.$video.addEventListener(
           e,
@@ -124,6 +126,18 @@ export default {
       const ratio = (currentTime / this.$player.$video.duration) * 100;
       this.updateTextTime(currentTime);
       this.updateSlider(ratio);
+    },
+    handleProgress() {
+      try {
+        const video = this.$player.$video;
+        if (!video || !video.buffered || video.buffered.length === 0) return;
+        const end = video.buffered.end(video.buffered.length - 1);
+        const duration = video.duration || 0;
+        const ratio = duration ? Math.min(100, Math.max(0, (end / duration) * 100)) : 0;
+        const width = `${ratio}%`;
+        this.bufferedLeft = width;
+        this.$player.bufferedLeft = width;
+      } catch (e) {}
     },
     handlePause() {
       // 视频暂停
@@ -218,6 +232,14 @@ export default {
     touch-action none
     &.move
       height 0.25em
+    .bplayer_slider-buffered
+      width 0
+      height 100%
+      border-radius 0.3125em
+      background-color rgba(255,255,255,0.25)
+      position absolute
+      top 0
+      left 0
     .bplayer_slider-cur
       width 0
       height 100%
